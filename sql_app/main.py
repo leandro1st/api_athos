@@ -1,7 +1,10 @@
 from typing import Any, List
-from fastapi import Depends, FastAPI, HTTPException, Response
-from fastapi.responses import HTMLResponse
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import orjson
 from sqlalchemy.orm import Session
 from . import crud, models, schemas
@@ -24,6 +27,22 @@ app.add_middleware(
     allow_origins = ['*'],
 )
 
+# 404 - not found
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=jsonable_encoder({'sku': exc.detail})
+    )
+
+# 422 - type error
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({'sku': exc.errors()[0]['input']})
+    )
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -36,27 +55,13 @@ def get_db():
 def root():
     return '<h1>Bem-vindo!</h1>'
 
-# @app.get("/items/", response_model=List[schemas.Item])
-# def read_item(db: Session = Depends(get_db)):
-#     db_item = crud.get_all_items(db)
-#     if db_item is None:
-#         raise HTTPException(status_code=404, detail="No items found")
-#     return db_item
-
 @app.get("/items/")
 def read_item_empty():
-    return {'sku': ''}
-
-@app.get("/items/last", response_model=schemas.Item)
-def read_item_last(db: Session = Depends(get_db)):
-    db_item = crud.get_last_item(db)
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="No item found")
-    return db_item
+    raise HTTPException(status_code=404, detail='')
 
 @app.get("/items/{item_id}", response_model=schemas.Item)
 def read_item(item_id: int, db: Session = Depends(get_db)):
     db_item = crud.get_item(db, item_id=item_id)
     if db_item is None:
-        raise HTTPException(status_code=404, detail="No item found")
+        raise HTTPException(status_code=404, detail=item_id)
     return db_item
