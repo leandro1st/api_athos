@@ -8,6 +8,8 @@ class Item(Base):
     sku = Column(Integer, primary_key=True)
     nome = Column(String)
     cod_barras1 = Column(String)
+    cod_barras2 = Column(String)
+    referencia = Column(String)
     preco_custo = Column(Numeric)
     preco_real = Column(Numeric)
     preco_venda1 = Column(Numeric)

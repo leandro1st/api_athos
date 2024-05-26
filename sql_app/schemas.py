@@ -13,6 +13,8 @@ class ItemCreate(ItemBase):
 
 class Item(ItemBase):
     cod_barras1: str | None = None
+    cod_barras2: str | None = None
+    referencia: str | None = None
     preco_custo: Decimal
     preco_real: Decimal
     preco_venda1: Decimal
