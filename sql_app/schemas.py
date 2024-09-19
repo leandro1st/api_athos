@@ -11,6 +11,10 @@ class ItemCreate(ItemBase):
     pass
 
 
+class ItemUpdate(BaseModel):
+    preco_venda1: Decimal
+
+
 class Item(ItemBase):
     cod_barras1: str | None = None
     cod_barras2: str | None = None

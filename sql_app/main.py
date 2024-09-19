@@ -65,3 +65,18 @@ def read_item(item_id: int, db: Session = Depends(get_db)):
     if db_item is None:
         raise HTTPException(status_code=404, detail=item_id)
     return db_item
+
+@app.patch("/items/")
+def update_price_empty():
+    raise HTTPException(status_code=404, detail='')
+
+@app.patch("/items/{item_id}", response_model=schemas.Item)
+def update_price(item_id: int, item_update: schemas.ItemUpdate, db: Session = Depends(get_db)):
+    db_item = crud.get_item(db, item_id=item_id)
+    if db_item is None:
+        raise HTTPException(status_code=404, detail=item_id)
+
+    db_item.preco_venda1 = item_update.preco_venda1
+    db.commit()
+    db.refresh(db_item)
+    return db_item
