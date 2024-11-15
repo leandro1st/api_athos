@@ -2,20 +2,9 @@ from decimal import Decimal
 from pydantic import BaseModel
 
 
-class ItemBase(BaseModel):
+class Item(BaseModel):
     sku: int
     nome: str
-
-
-class ItemCreate(ItemBase):
-    pass
-
-
-class ItemUpdate(BaseModel):
-    preco_venda1: Decimal
-
-
-class Item(ItemBase):
     cod_barras1: str | None = None
     cod_barras2: str | None = None
     referencia: str | None = None
@@ -24,7 +13,23 @@ class Item(ItemBase):
     preco_venda1: Decimal
     cfop_nfe: int | None = None
     cfop_sat: int | None = None
-
+    observacao: str | None = None
 
     class Config:
         from_attributes = True
+
+class ItemUpdate(BaseModel):
+    preco_custo: Decimal
+    preco_venda1: Decimal
+    observacao: str
+
+
+class Gtin(BaseModel):
+    gtin: str
+    sku: int
+
+    class Config:
+        from_attributes = True
+
+class GtinCreate(BaseModel):
+    sku: int

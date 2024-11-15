@@ -15,3 +15,11 @@ class Item(Base):
     preco_venda1 = Column(Numeric)
     cfop_nfe = Column(Integer)
     cfop_sat = Column(Integer)
+    observacao = Column(String)
+
+
+class Gtin(Base):
+    __tablename__ = "cod_barras"
+
+    gtin = Column(String, primary_key=True)
+    sku = Column(Integer)
