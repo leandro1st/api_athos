@@ -20,6 +20,7 @@ class Item(BaseModel):
 
 class ItemUpdate(BaseModel):
     preco_custo: Decimal
+    preco_real: Decimal
     preco_venda1: Decimal
     observacao: str
 

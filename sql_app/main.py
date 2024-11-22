@@ -78,6 +78,7 @@ def update_item(sku: int, item_update: schemas.ItemUpdate, db: Session = Depends
         raise HTTPException(status_code=404, detail=sku)
         
     db_item.preco_custo = item_update.preco_custo
+    db_item.preco_real = item_update.preco_real
     db_item.preco_venda1 = item_update.preco_venda1
     db_item.observacao = item_update.observacao
     db.commit()
